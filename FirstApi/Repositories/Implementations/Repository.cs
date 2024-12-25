@@ -1,46 +1,47 @@
 ﻿using FirstApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Security.Cryptography.Xml;
 
 namespace FirstApi.Repositories.Implementations
 {
-    public class Repository : IRepository
+    public class Repository<T>  : IRepository<T> where T : BaseEntity, new()
     {
         private readonly AppDbContext _context;
-
+        private readonly DbSet<T> _table;
         public Repository(AppDbContext context)
         {
             _context = context;
+            _table = _context.Set<T>();
         }
-
-
-
-        public IQueryable<Category> GetAll()
+        public IQueryable<T> GetAll()
         {
-            return _context.Categories;
+            return _table;
         }
-
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            return await _table.FirstOrDefaultAsync(c => c.Id == id);
         }
-
-        public void Update(Category category)
+        public void Update(T entity)
         {
-            _context.Categories.Update(category);
+            _table.Update(entity);
         }
-        public async Task AddAsync(Category category)
+        public async Task AddAsync(T entity)
         {
-            await _context.Categories.AddAsync(category);
+            await _table.AddAsync(entity);
         }
-
-        public void Delete(Category category)
+        public void Delete(T entity)
         {
-            _context.Categories.Remove(category);
+            _table.Remove(entity);
         }
-
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<object, bool>> expression)
+        {
+            return await _table.AnyAsync(expression);
         }
     }
 }
