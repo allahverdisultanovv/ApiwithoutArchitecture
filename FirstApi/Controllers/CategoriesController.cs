@@ -10,12 +10,10 @@ namespace FirstApi.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly IRepository _repository;
         private readonly ICategoryService _categoryService;
 
-        public CategoriesController(IRepository repository,ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _repository = repository;
             _categoryService = categoryService;
         }
         [HttpGet]
