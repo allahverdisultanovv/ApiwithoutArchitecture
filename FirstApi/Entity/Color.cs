@@ -1,6 +1,6 @@
 ﻿namespace FirstApi.Entity
 {
-    public class Color
+    public class Color : BaseEntity
     {
         public string Name { get; set; }
     }

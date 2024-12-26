@@ -7,18 +7,15 @@ namespace FirstApi.Services.Implementations
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository _repository;
+        private readonly IRepository<Category> _repository;
 
-        public CategoryService(IRepository repository)
+        public CategoryService(ICategoryRepository repository)
         {
             _repository = repository;
         }
-
-     
-
-        public async Task<List<Category>> GetAllAsync(int page,int take)
+        public async Task<List<Category>> GetAllAsync(int page, int take)
         {
-            var categories = await _repository.GetAll().ToListAsync();
+            var categories = await _repository.GetAll(skip: (page - 1) * take, take: take).ToListAsync();
             return categories;
         }
 
@@ -46,7 +43,7 @@ namespace FirstApi.Services.Implementations
 
         public async Task Delete(int id)
         {
-            Category category =await _repository.GetByIdAsync(id);
+            Category category = await _repository.GetByIdAsync(id);
             _repository.Delete(category);
             await _repository.SaveChangesAsync();
         }
